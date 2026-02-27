@@ -203,7 +203,25 @@ private buildPdfBuffer(facture: Facture): Promise<Buffer> {
     doc.font('Helvetica-Bold').fillColor('black').fontSize(14)
       .text(`${this.formatAmount(facture.totalAmount)} FCFA`, { align: 'right' });
 
+    // ── FOOTER (fixé en bas de page) ─────────────────────────────────
+    const pageHeight = doc.page.height;
+    const footerY = pageHeight - 120; // remonté pour rester sur la même page
+
+    doc.moveTo(startX, footerY).lineTo(startX + pageWidth, footerY).stroke('#cccccc');
+
+    doc.font('Helvetica-Bold').fillColor('#333').fontSize(10)
+      .text('Paiement sécurisé, rapide et fiable.', startX, footerY + 10, { align: 'center', width: pageWidth });
+
+    doc.font('Helvetica').fillColor('#555').fontSize(9)
+      .text(
+        `Pour tout problème, renseignement ou plainte, veuillez contacter ${facture.clientName} et pour des informations additionnelles, contactez FeexPay à contact@feexpay.me`,
+        startX,
+        footerY + 25,
+        { align: 'center', width: pageWidth }
+      );
+
     doc.end();
+
   });
 }
 
